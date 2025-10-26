@@ -3,28 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Camera Background Site</title>
+  <title>Gianluca Maruccio</title>
   <style>
     /* Make the page fill the viewport */
     html, body {
-      margin: 0;
+      margin: 10px;
       padding: 0;
       height: 100%;
       font-family: Arial, sans-serif;
-      color: white;
+	  font-style: italic;
+	  font-weight:bold;
+      color: #0054fe;
       overflow: hidden;
+	  text-shadow: 1px 1px 0px white;
     }
 
     /* Fullscreen background image from MJPEG webcam */
     #background {
       position: fixed;
-      top: 0;
-      left: 0;
+      bottom: 0%;
+      left: 0%;
       width: 100%;
       height: 100%;
       object-fit: cover;
       z-index: -1;
       filter: brightness(0.6); /* darken so text is readable */
+	  text-decoration: none;
     }
 
     /* Content container */
@@ -32,63 +36,47 @@
       position: relative;
       z-index: 1;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      flex-direction: row;
+      justify-content: left;
+      align-items: left;
       height: 100%;
-      text-align: center;
+      text-align: left;
     }
 
     /* Name placeholder */
     #name {
-      font-size: 3rem;
+      font-size: 2rem;
       margin-bottom: 20px;
       cursor: pointer;
-      text-decoration: underline;
+      text-decoration: none;
     }
 
     /* PDF placeholder */
-    #pdf-link {
-      font-size: 1.5rem;
-      margin: 10px;
-      color: #ffcc00;
-      text-decoration: underline;
-    }
-
-    /* Contact links */
-    .contacts {
-      margin-top: 30px;
-      display: flex;
-      gap: 20px;
-      font-size: 1.2rem;
-    }
-
-    .contacts a {
-      color: #00ccff;
-      text-decoration: underline;
-    }
+    .pdf-link {
+      font-size: 1rem;
+      margin: 0px;
+      text-decoration: none;
+    }	  
   </style>
 </head>
 <body>
   <!-- Background MJPEG feed -->
-  <img 
-    id="background" 
-    src="https://axis.webcam-brienz.ch/axis-cgi/mjpg/video.cgi?resolution=640x480&dummy=1559736733652" 
-    alt="Live Webcam">
+  <img id="background" src="https://axis.webcam-brienz.ch/axis-cgi/mjpg/video.cgi?resolution=640x480&dummy=1559736733652" 
+    alt="Live Webcam" style="transform: scaleX(-1)";>
 
   <!-- Content -->
   <div class="content">
+	  <div pdf-link>
     <!-- Name placeholder -->
-    <div id="name" onclick="refreshPage()">Your Name</div>
+    <div id="name" onclick="refreshPage()">Gianluca Maruccio</div>
 
     <!-- PDF placeholder -->
-    <a id="pdf-link" href="example.pdf" target="_blank">View PDF</a>
-
-    <!-- Contact links -->
-    <div class="contacts">
-      <a href="mailto:youremail@example.com">Email</a>
-      <a href="https://www.instagram.com/yourusername" target="_blank">Instagram</a>
-    </div>
+    <div><a href="files/portfolio_gianlcuca_maruccio.pdf" target="_blank">Portfolio &amp; CV</a></div>
+	  
+	<div><a href="mailto:gianluca.maruccio93@gmail.com">Email</a></div>
+	  
+	<div><a href="https://www.instagram.com/gianluca.marucci.o" target="_blank">Instagram</a></div>
+		  </div>
   </div>
 
   <!-- JavaScript -->
