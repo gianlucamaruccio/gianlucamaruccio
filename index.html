@@ -4,34 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gianluca Maruccio</title>
+
   <style>
-    /* Make the page fill the viewport */
     html, body {
       margin: 10px;
       padding: 0;
       height: 100%;
       font-family: Arial, sans-serif;
-	  font-style: italic;
-	  font-weight:bold;
+      font-style: italic;
+      font-weight: bold;
       color: #0054fe;
       overflow: hidden;
-	  text-shadow: 1px 1px 0px white;
+      text-shadow: 1px 1px 0px white;
     }
 
-    /* Fullscreen background image from MJPEG webcam */
-    #background {
+    #background-container {
       position: fixed;
-      bottom: 0%;
-      left: 0%;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      top: -25%;
+      left: -25%;
+      width: 150%;
+      height: 150%;
       z-index: -1;
-      filter: brightness(0.6); /* darken so text is readable */
-	  text-decoration: none;
+      overflow: hidden;
+      filter: brightness(0.6);
+      object-fit: cover;
     }
 
-    /* Content container */
     .content {
       position: relative;
       z-index: 1;
@@ -43,7 +41,6 @@
       text-align: left;
     }
 
-    /* Name placeholder */
     #name {
       font-size: 2rem;
       margin-bottom: 20px;
@@ -51,53 +48,176 @@
       text-decoration: none;
     }
 
-    /* PDF placeholder */
-    .pdf-link {
-      font-size: 1rem;
-      margin: 0px;
-      text-decoration: none;
-    }	  
-	  
-	 @media (max-width: 480px) {
-  body {
-    font-size: 2rem; /* multiply by 1.5 */
-    
-  }
-  
-  #name {
-    font-size: 3.2rem; /* multiply by 1.5 */
-	line-height: 0.9;
-  }
-}
-  }
+    .pdf-link { font-size: 1rem; margin: 0px; text-decoration: none; }
+
+    @media (max-width: 480px) {
+      body { font-size: 2rem; }
+      #name { font-size: 3.2rem; line-height: 0.9; }
+    }
+
+    /* disable hover/click on background */
+    #background-container,
+    #background-container iframe,
+    #background-container video,
+    #background-container img {
+      pointer-events: none;
+    }
   </style>
+
+  <!-- HLS.js for .m3u8 playback -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
+
 <body>
-  <!-- Background MJPEG feed -->
-  <img id="background" src="https://axis.webcam-brienz.ch/axis-cgi/mjpg/video.cgi?resolution=640x480&dummy=1559736733652" 
-    alt="Live Webcam" style="transform: scaleX(-1)";>
 
-  <!-- Content -->
+  <div id="background-container"></div>
+
   <div class="content">
-	  <div pdf-link>
-    <!-- Name placeholder -->
-    <div id="name" onclick="refreshPage()">Gianluca Maruccio</div>
-
-    <!-- PDF placeholder -->
-    <div><a href="files/portfolio_gianlcuca_maruccio.pdf" target="_blank">Portfolio &amp; CV</a></div>
-	  
-	<div><a href="mailto:gianluca.maruccio93@gmail.com">Email</a></div>
-	  
-	<div><a href="https://www.instagram.com/gianluca.marucci.o" target="_blank">Instagram</a></div>
-		  </div>
+    <div pdf-link>
+      <div id="name" onclick="refreshPage()">Gianluca Maruccio</div>
+      <div><a href="files/portfolio_gianlcuca_maruccio.pdf" target="_blank">Portfolio &amp; CV</a></div>
+      <div><a href="mailto:gianluca.maruccio93@gmail.com">Email</a></div>
+      <div><a href="https://www.instagram.com/gianluca.marucci.o" target="_blank">Instagram</a></div>
+    </div>
   </div>
 
-  <!-- JavaScript -->
   <script>
-    // Refresh page when name is clicked
-    function refreshPage() {
-      location.reload();
+    function refreshPage() { location.reload(); }
+
+    /* -------------------------------
+       Your background list
+    -------------------------------- */
+    const backgroundSources = [
+	"https://www.youtube.com/embed/xlQlaXLsTak",
+	"https://camserver2.in2thebeach.es/streams/puertorico1/index.m3u8",
+	"https://video1.largoargentina.com/axis-cgi/mjpg/video.cgi?resolution=800x600&dummy=1750171961509",
+	"https://www.youtube.com/embed/0xllXx9QMBk",
+	"https://www.youtube.com/embed/3ATYHKN2hIg",
+	"https://www.youtube.com/embed/6d1p-ybCouM",
+	"https://www.youtube.com/embed/8Vn3fQnY_J0",
+	"https://www.youtube.com/embed/98b4ABKO5Yc",
+	"https://www.youtube.com/embed/AeMUdOPFcXI",
+	"https://www.youtube.com/embed/bgdFMeUJDuE",
+	"https://www.youtube.com/embed/bo6yE8iIpNE",
+	"https://www.youtube.com/embed/cG58p4dodx0",
+	"https://www.youtube.com/embed/ffUznsd-pxU",
+	"https://www.youtube.com/embed/GXTycxKz_FQ",
+	"https://www.youtube.com/embed/JlxDI6rGH-U",
+	"https://www.youtube.com/embed/KmQrxaRSurQ",
+	"https://www.youtube.com/embed/knY-8mJ8_8U",
+	"https://www.youtube.com/embed/MApnQlsX5AQ",
+	"https://www.youtube.com/embed/ninudy1Bxso",
+	"https://www.youtube.com/embed/OSKgIDnBwwQ",
+	"https://www.youtube.com/embed/q77lJ0nMoNU",
+	"https://www.youtube.com/embed/qR_ua5Lr3Vo",
+	"https://www.youtube.com/embed/tQBGH__Fq_0",
+	"https://www.youtube.com/embed/v9NWddwu8rw",
+	"https://www.youtube.com/embed/Vrx3-Rg2SRY",
+	"https://www.youtube.com/embed/wAdTV6Uc5eA",
+	"https://www.youtube.com/embed/wPxXNnD8u_s",
+	"https://www.youtube.com/embed/XhBUrjhJm1A",
+	"https://www.youtube.com/embed/yfSyjwY6zSQ",
+	"https://www.youtube.com/embed/z1MErdsqsw8",
+	"https://axis.webcam-brienz.ch/axis-cgi/mjpg/video.cgi?resolution=640x480&dummy=1559736733652"
+    ];
+
+    function isYouTube(url) {
+      return url.includes("youtube.com") || url.includes("youtu.be");
     }
+
+    function isM3U8(url) {
+      return url.endsWith(".m3u8");
+    }
+
+    /* -------------------------------
+       YouTube loader
+    -------------------------------- */
+    function loadYouTube(url) {
+      let embedUrl = url;
+
+      if (!url.includes("/embed/")) {
+        let videoId = "";
+        if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1].split(/[?&]/)[0];
+        } else if (url.includes("youtube.com/watch")) {
+          const params = new URLSearchParams(url.split("?")[1]);
+          videoId = params.get("v");
+        }
+        if (!videoId) return console.error("Invalid YouTube URL:", url);
+        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      }
+
+      document.getElementById("background-container").innerHTML = `
+        <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&loop=1&modestbranding=1&showinfo=0&rel=0"
+                style="width:100%;height:100%;border:none;object-fit:cover;"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+        </iframe>
+      `;
+    }
+
+    /* -------------------------------
+       .m3u8 Loader (video background)
+    -------------------------------- */
+    function loadM3U8(url) {
+      const container = document.getElementById("background-container");
+      container.innerHTML = "";
+
+      const video = document.createElement("video");
+      video.autoplay = true;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.style.width = "100%";
+      video.style.height = "100%";
+      video.style.objectFit = "cover";
+
+      container.appendChild(video);
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = url;
+      } else {
+        console.error("HLS not supported.");
+      }
+    }
+
+    /* -------------------------------
+       FALLBACK: normal image
+    -------------------------------- */
+    function loadImage(url) {
+      const container = document.getElementById("background-container");
+      container.innerHTML = "";
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "cover";
+
+      container.appendChild(img);
+    }
+
+    /* -------------------------------
+       Choose a random source
+    -------------------------------- */
+    function loadRandomBackground() {
+      const choice = backgroundSources[Math.floor(Math.random() * backgroundSources.length)];
+
+      if (isYouTube(choice)) {
+        loadYouTube(choice);
+      } else if (isM3U8(choice)) {
+        loadM3U8(choice);
+      } else {
+        loadImage(choice);
+      }
+    }
+
+    loadRandomBackground();
   </script>
+
 </body>
 </html>
