@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Cowboy Simulator</title>
+	<link rel="icon" type="image/x-icon" href="files/cowboyhat.png">
+  <style>
+	  
+   body {
+  margin: 0;
+  background: black;
+  height: 100vh;
+  position: relative; /* Essential for absolute children to stay contained */
+  overflow: hidden;
+}
+	  
+	    .bubble {
+  position: absolute;
+		   opacity: 1;
+		  object-fit: cover;
+  z-index: 10;
+  transform: scaleX(-1); /* Keep the mirror effect */
+		  mask-image: radial-gradient(circle, green 40%, transparent 50%);
+			mix-blend-mode: color-burn;
+}
+
+/* Positioning each bubble individually */
+.b1 { width: 10vh; height: 15vh; top: 80dvh ; left: 70dvw; }
+.b2 { width: 20vh; height: 20vh; top: 15dvh ; left: 80dvw; }
+.b3 { width: 5vh; height: 10vh; top: 7dvh; left: 15dvw; }
+	  
+	  #faceLayer {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 80dvh;
+  width: auto;
+  z-index: 3;
+  touch-action: none;
+}
+
+#faceLayer video,
+#faceLayer canvas  {
+  position: absolute;
+  /* This centering trick works with absolute positioning */
+  inset: 0; 
+  margin: auto;
+      transform: scaleX(-1);
+	height: 80dvh;
+      opacity: 1;
+	  z-index: 3;
+	mask-image: radial-gradient(circle, green 40%, transparent 50%);
+	  }
+	  
+	 
+
+  /* Background container */
+    .yt-bg {
+      position: relative;
+		height: 100dvh;
+		width: 100%;
+      inset: 1;
+      z-index: -1;
+      overflow: hidden;
+      background: black;
+    }
+
+    /* Video sizing trick */
+    .yt-bg iframe {
+      position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250dvh;   /* 16:9 ratio trick */
+  height: 250dvh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+	
+	<div class="yt-bg">
+<iframe  src="https://www.youtube.com/embed/YVhlh-f7AjQ?version=3&loop=1&playlist=YVhlh-f7AjQ&autoplay=1&mute=1&playsinline=1&controls=0&loop=1&modestbranding=1&rel=0"
+    	style="border:none;object-fit:fill;"
+		allow="autoplay; encrypted-media"
+    	loading="eager"
+		allowfullscreen>
+        </iframe>
+  </div>
+	
+<div id="faceLayer">
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas></div>
+	
+	<video class="bubble b1" autoplay playsinline></video>
+<video class="bubble b2" autoplay playsinline></video>
+<video class="bubble b3" autoplay playsinline></video>
+	
+	<!--<div id="frame4"></div>-->
+	
+<script type="module">
+import {
+  FaceLandmarker,
+  FilesetResolver
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+// ---- Load hat image
+const hat = new Image();
+hat.src = "files/cowboyhat.png";
+
+// ---- Webcam
+const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+video.srcObject = stream;
+await video.play();
+
+// Add these lines to hook up the bubbles:
+document.querySelectorAll('.bubble').forEach(b => {
+  b.srcObject = stream;
+});
+
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
+
+// ---- MediaPipe setup
+const fileset = await FilesetResolver.forVisionTasks(
+  "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+);
+
+const landmarker = await FaceLandmarker.createFromOptions(fileset, {
+  baseOptions: {
+    modelAssetPath:
+      "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
+  },
+  runningMode: "VIDEO",
+  numFaces: 1
+});
+
+// ---- Render loop
+function loop() {
+  ctx.drawImage(video, 10, 20, canvas.width, canvas.height);
+
+  const result = landmarker.detectForVideo(video, performance.now());
+
+  if (result.faceLandmarks.length > 0) {
+    const lm = result.faceLandmarks[0];
+
+    // Landmark indices (stable)
+    const left = lm[127];
+    const right = lm[356];
+    const top = lm[10];
+
+    const x = left.x * canvas.width;
+    const y = top.y * canvas.height;
+
+    const width = (right.x - left.x) * canvas.width * 1.8;
+    const height = width * (hat.height / hat.width);
+
+ 
+    // Draw hat
+    if (hat.complete) {
+      ctx.drawImage(
+        hat,
+        x - width * 0.2,
+        y - height,
+        width,
+        height
+      );
+    }
+  }
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+	
+	// ----------------------
+// DRAG FUNCTIONALITY
+// ----------------------
+
+function makeDraggable(element) {
+  let offsetX = 0;
+  let offsetY = 0;
+  let isDragging = false;
+
+  element.style.touchAction = "none"; // prevents scroll while dragging
+
+  element.addEventListener("pointerdown", (e) => {
+    isDragging = true;
+
+    const rect = element.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+
+    element.setPointerCapture(e.pointerId);
+  });
+
+  element.addEventListener("pointermove", (e) => {
+    if (!isDragging) return;
+
+    const x = e.clientX - offsetX;
+    const y = e.clientY - offsetY;
+
+    element.style.left = `${x}px`;
+    element.style.top = `${y}px`;
+  });
+
+  element.addEventListener("pointerup", () => {
+    isDragging = false;
+  });
+
+  element.addEventListener("pointercancel", () => {
+    isDragging = false;
+  });
+}
+
+// Make bubbles draggable
+document.querySelectorAll(".bubble").forEach(makeDraggable);
+
+// Make canvas draggable
+const faceLayer = document.getElementById("faceLayer");
+makeDraggable(faceLayer);
+</script>
+
+</body>
+</html>
