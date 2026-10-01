@@ -99,34 +99,32 @@
        Your background list
     -------------------------------- */
     const backgroundSources = [
-	"https://www.youtube.com/embed/xlQlaXLsTak",
-	"https://camserver2.in2thebeach.es/streams/puertorico1/index.m3u8",
 	"https://video1.largoargentina.com/axis-cgi/mjpg/video.cgi?resolution=800x600&dummy=1750171961509",
 	"https://www.youtube.com/embed/0xllXx9QMBk",
 	"https://www.youtube.com/embed/3ATYHKN2hIg",
-	"https://www.youtube.com/embed/8Vn3fQnY_J0",
-	"https://www.youtube.com/embed/98b4ABKO5Yc",
 	"https://www.youtube.com/embed/AeMUdOPFcXI",
-	"https://www.youtube.com/embed/bgdFMeUJDuE",
 	"https://www.youtube.com/embed/bo6yE8iIpNE",
-	"https://www.youtube.com/embed/cG58p4dodx0",
-	"https://www.youtube.com/embed/ffUznsd-pxU",
 	"https://www.youtube.com/embed/GXTycxKz_FQ",
-	"https://www.youtube.com/embed/JlxDI6rGH-U",
 	"https://www.youtube.com/embed/KmQrxaRSurQ",
-	"https://www.youtube.com/embed/knY-8mJ8_8U",
-	"https://www.youtube.com/embed/MApnQlsX5AQ",
-	"https://www.youtube.com/embed/ninudy1Bxso",
 	"https://www.youtube.com/embed/OSKgIDnBwwQ",
-	"https://www.youtube.com/embed/qR_ua5Lr3Vo",
 	"https://www.youtube.com/embed/tQBGH__Fq_0",
 	"https://www.youtube.com/embed/v9NWddwu8rw",
-	"https://www.youtube.com/embed/Vrx3-Rg2SRY",
 	"https://www.youtube.com/embed/wAdTV6Uc5eA",
 	"https://www.youtube.com/embed/XhBUrjhJm1A",
-	"https://www.youtube.com/embed/yfSyjwY6zSQ",
 	"https://www.youtube.com/embed/z1MErdsqsw8",
-	"https://axis.webcam-brienz.ch/axis-cgi/mjpg/video.cgi?resolution=640x480&dummy=1559736733652"
+	"https://axis.webcam-brienz.ch/axis-cgi/mjpg/video.cgi?resolution=640x480&dummy=1559736733652",
+	"https://www.youtube.com/embed/3nyPER2kzqk",
+	"https://www.youtube.com/embed/xrX7fD7HOzQ",
+	"https://www.youtube.com/embed/AvKdtZIb-6c",
+	"https://www.youtube.com/embed/gXKuUyKt8mc",
+	"https://www.youtube.com/embed/gnF7_gRHHMQ",
+	"https://www.youtube.com/embed/JMMoRwYo5kE",
+	"https://www.youtube.com/embed/iMqrD-HBDGo",
+	"https://www.youtube.com/embed/UCgLr29bxO8",
+	"https://www.youtube.com/embed/MW_4HaVspb8",
+	"https://www.youtube.com/embed/eU8A7QQOcso",
+	"https://www.youtube.com/embed/W2CicgFq5oo",
+	"https://www.youtube.com/embed/-xzg3wujOVM",
     ];
 
     function isYouTube(url) {
@@ -156,7 +154,7 @@
       }
 
       document.getElementById("background-container").innerHTML = `
-        <iframe src="${embedUrl}?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&modestbranding=1&rel=0"
+        <iframe src="${embedUrl}?autoplay=1&mute=1&playsinline=1&controls=0&autohide=1&loop=1&modestbranding=1&rel=0"
     	style="width:100%;height:100%;border:none;object-fit:cover;"
 		allow="autoplay; encrypted-media"
     	loading="eager"
